@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal.invalid/agent-workflow/run-state.schema.json",
+  "title": "Agent workflow run state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "runId", "taskId", "taskRevision", "taskContractPath",
+    "taskContractSha256", "status", "attempt", "eventSequence", "owner",
+    "repository", "worktree", "timestamps"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "runId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,95}$" },
+    "taskId": { "type": "string" },
+    "taskRevision": { "type": "integer", "minimum": 1 },
+    "taskContractPath": { "type": "string" },
+    "taskContractSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "status": {
+      "enum": ["initializing", "ready", "running", "verifying", "needs_review", "accepted", "landing", "completed", "needs_attention", "interrupted", "cancelled"]
+    },
+    "attempt": { "type": "integer", "minimum": 1 },
+    "reviewCyclesUsed": { "type": "integer", "minimum": 0 },
+    "eventSequence": { "type": "integer", "minimum": 1 },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tokenSha256", "acquiredAtUtc"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "tokenSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "acquiredAtUtc": { "type": "string", "format": "date-time" }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "baseCommit"],
+      "properties": {
+        "root": { "type": "string" },
+        "baseCommit": { "type": "string", "pattern": "^[a-f0-9]{40,64}$" }
+      }
+    },
+    "worktree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "branch"],
+      "properties": {
+        "path": { "type": "string" },
+        "branch": { "type": "string" }
+      }
+    },
+    "evidencePath": { "type": ["string", "null"] },
+    "evidenceSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "reviewPath": { "type": ["string", "null"] },
+    "reviewSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+    "integrationCommit": { "type": ["string", "null"] },
+    "lastError": { "type": ["string", "null"] },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["createdAtUtc", "updatedAtUtc"],
+      "properties": {
+        "createdAtUtc": { "type": "string", "format": "date-time" },
+        "updatedAtUtc": { "type": "string", "format": "date-time" },
+        "completedAtUtc": { "type": ["string", "null"], "format": "date-time" }
+      }
+    }
+  }
+}

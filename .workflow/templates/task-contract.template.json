@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "taskId": "first-workflow-task",
+  "revision": 1,
+  "objective": "Make one small change with reproducible verification.",
+  "nonGoals": ["No remote Git operations", "No dependency installation"],
+  "repository": { "root": "C:/repos/project", "baseRef": "HEAD" },
+  "worktree": { "path": "C:/worktrees/first-workflow-task", "branch": "agent/first-workflow-task" },
+  "scope": {
+    "writablePaths": ["README.md"],
+    "protectedPaths": [".github/", ".workflow/", ".agents/", "AGENTS.md"]
+  },
+  "modelPolicy": {
+    "allowedFamilies": ["openai", "gemini"],
+    "allowedModelIds": ["REPLACE_WITH_APPROVED_MODEL_ID"],
+    "allowAutomaticFallback": false
+  },
+  "toolPolicy": { "allowedExecutables": ["git"], "allowNetwork": false },
+  "acceptanceCriteria": [
+    {
+      "id": "diff-check",
+      "description": "Check the complete candidate diff for whitespace errors.",
+      "command": {
+        "executable": "git",
+        "arguments": ["diff", "--check", "{baseCommit}", "{headCommit}", "--"],
+        "workingDirectory": ".",
+        "timeoutSeconds": 30
+      }
+    }
+  ],
+  "budgets": { "elapsedMinutes": 30, "retryLimit": 1, "reviewCycles": 2 },
+  "review": { "required": true }
+}

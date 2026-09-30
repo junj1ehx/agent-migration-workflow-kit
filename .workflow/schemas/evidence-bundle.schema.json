@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal.invalid/agent-workflow/evidence-bundle.schema.json",
+  "title": "Agent workflow evidence bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "runId", "taskId", "taskRevision", "taskContractSha256",
+    "capturedAtUtc", "baseCommit", "headCommit", "headTree", "worktreeClean",
+    "changedPaths", "historyPaths", "scopePassed", "checks", "allChecksPassed"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "runId": { "type": "string" },
+    "taskId": { "type": "string" },
+    "taskRevision": { "type": "integer", "minimum": 1 },
+    "taskContractSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "capturedAtUtc": { "type": "string", "format": "date-time" },
+    "baseCommit": { "type": "string", "pattern": "^[a-f0-9]{40,64}$" },
+    "headCommit": { "type": "string", "pattern": "^[a-f0-9]{40,64}$" },
+    "headTree": { "type": "string", "pattern": "^[a-f0-9]{40,64}$" },
+    "worktreeClean": { "const": true },
+    "changedPaths": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "historyPaths": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "scopePassed": { "const": true },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "executable", "arguments", "workingDirectory", "exitCode", "timedOut", "durationMs", "stdoutSha256", "stderrSha256", "passed"],
+        "properties": {
+          "id": { "type": "string" },
+          "executable": { "type": "string" },
+          "arguments": { "type": "array", "items": { "type": "string" } },
+          "workingDirectory": { "type": "string" },
+          "exitCode": { "type": ["integer", "null"] },
+          "timedOut": { "type": "boolean" },
+          "durationMs": { "type": "integer", "minimum": 0 },
+          "stdoutSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "stderrSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "passed": { "type": "boolean" }
+        }
+      }
+    },
+    "allChecksPassed": { "type": "boolean" }
+  }
+}

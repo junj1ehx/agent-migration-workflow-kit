@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal.invalid/agent-workflow/review-record.schema.json",
+  "title": "Local workflow review attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "runId", "reviewerId", "decision", "summary", "evidenceSha256", "headCommit", "reviewedAtUtc"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "runId": { "type": "string", "minLength": 1 },
+    "reviewerId": { "type": "string", "minLength": 1 },
+    "decision": { "enum": ["approve", "request_changes"] },
+    "summary": { "type": "string", "minLength": 1 },
+    "evidenceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "headCommit": { "type": "string", "pattern": "^[a-f0-9]{40,64}$" },
+    "reviewedAtUtc": { "type": "string", "format": "date-time" }
+  }
+}
